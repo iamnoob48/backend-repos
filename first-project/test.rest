@@ -1,0 +1,22 @@
+### TEST GET / WEBSITE
+
+GET http://localhost:3000/
+
+### TEST GET /login WEBSITE 
+GET http://localhost:3000/login
+
+### DATA ENDPOINT
+GET http://localhost:3000/api/data
+
+### POST DATA ENDPOIT
+
+POST http://localhost:3000/api/data
+Content-Type: application/json
+
+{
+    "name":"Nandu",
+    "jobRole":"Data Scietist"
+}
+
+### DELETE REQUEST
+DELETE http://localhost:3000/api/data
