@@ -1,0 +1,20 @@
+### GET / app
+GET http://localhost:8383
+
+### POST req to /auth/register
+POST http://localhost:8383/auth/register
+Content-Type: application/json
+
+{
+    "username":"nandu",
+    "password" : "12345"
+}
+
+### POST req to /auth/login
+POST http://localhost:8383/auth/login
+Content-Type: application/json
+
+{
+    "username":"nandu",
+    "password" : "12345"
+}
