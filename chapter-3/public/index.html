@@ -277,8 +277,11 @@
         await fetch(apiBase + 'todos' + '/' + index, {
             method: 'DELETE',
             headers: {
+                'Content-Type' : 'application/json',
                 'Authorization': token
+
             },
+            body: JSON.stringify({task : todos.find(val=>val.id===index).task})
         })
         fetchTodos()
     }
@@ -317,6 +320,8 @@
         }
         run()
     }
+  
+
 </script>
 
 </html>
