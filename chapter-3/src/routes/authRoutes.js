@@ -1,68 +1,62 @@
-import express from "express"
-import bcrypt from "bcryptjs"
-import jwt from "jsonwebtoken"
+import express from 'express'
+import bcrypt from 'bcryptjs'
 import db from '../db.js'
+import jwt from 'jsonwebtoken'
 
-const routes = express.Router();
 
+//If the middleware intercepts it will rout to this
+const routes = express.Router()
+
+//POST req for registering the user
 routes.post('/register',(req,res)=>{
-    //Frontend will send a fetch request the content is inside the body so we are accessing that element
-    const {username,password} = req.body;
-    //When creating large scale apps we need to encrypt the passwords we use bcrypt lib to do that bu using hashSync method inside it
-    const hashedPass = bcrypt.hashSync(password,8);
-    //We need to inject the username pass coming from the frontend fetch request
+    //Store from the incoming post request
+    const {username, password} = req.body;
+    //We need to encrypt our password
+    const hashedPassword = bcrypt.hashSync(password,8);
+    
     try{
-        const insertData = db.prepare(`INSERT INTO user (username,password) VALUES (?,?)`);
-        const result = insertData.run(username,hashedPass);
+        //We need to inject this info inside our SQLite db
+        const user = db.prepare(`INSERT INTO user (username,password) VALUES (?,?)`);
+        const result = user.run(username,hashedPassword);
+        //We will insert a default task
+        const defaultTask = "This is your first task";
+        const insertTask = db.prepare(`INSERT INTO todo (user_id,task) VALUES (?,?)`);
+        insertTask.run(result.lastInsertRowid,defaultTask);
 
-        //Create a default todo when the user registers
-        const defaultText = "Hello this is your first todo";
-        const defaultTodo = db.prepare(`INSERT INTO todo (user_id,task) VALUES (?,?)`);
-        defaultTodo.run(result.lastInsertRowid,defaultText);
-
-        //We need to create a token
-        const token = jwt.sign({id:result.lastInsertRowid}, process.env.JWT_SECRET_KEY, {expiresIn:'24h'});
-        res.json({token})
+        const token = jwt.sign({id:result.lastInsertRowid},process.env.JWT_SECRET_KEY,{expiresIn:'24h'});
+        res.json({token});
 
     }catch(err){
         console.log(err.message);
-        res.sendStatus(501)
+        res.sendStatus(501);
     }
-    
+
 
 })
+//Login authentication
 routes.post('/login',(req,res)=>{
-    //After user is registered and the data is entered in our database
+    //Retrieve username and password
     const {username,password} = req.body;
-    try{
-        
-        //Fetch that data inside our database
-        const getUser = db.prepare(`SELECT * FROM user WHERE username = ?`);
-        const checkUser = getUser.get(username);
-        console.log(checkUser,password);
+    //Check if the username entered and db username is the same
+    const user = db.prepare(`SELECT * FROM user WHERE username = ?`);
+    const result = user.get(username);
 
-        //We are checking if the user is matched or not
-        if(!checkUser) {
-            return res.status(404).send({message:"User not found"});
-        }
-        //We are checking if password is matched or not
-        const checkPassword = bcrypt.compareSync(password,checkUser.password);
-        if(!checkPassword){
-            return res.status(404).send({message:"Password is incorrect check again"});
-        }
-        const token = jwt.sign({id:checkUser.id}, process.env.JWT_SECRET_KEY, {expiresIn : '24h'})
-        res.json({token});
+    //If user is not matched we will send back a status and json telling its not matched
+    if(!user){return res.status(401).json({message:"User not found"})}
+    const checkPass = bcrypt.compareSync(password,result.password);
+    if(!checkPass) {return res.status(401).json({message:"Password incorrect"})};
 
-
-    } catch(err){
-        console.log(err.message);
-        res.sendStatus(500);
-    }
-    
-
-
+    //If both user and password match the database we will generate token
+    const token = jwt.sign({id:result.id}, process.env.JWT_SECRET_KEY, {expiresIn:"24h"});
+    res.json({token});
 
 })
+
+
+
+
+
+
 
 
 export default routes;

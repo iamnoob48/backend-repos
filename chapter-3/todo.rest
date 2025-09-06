@@ -18,3 +18,33 @@ Content-Type: application/json
     "username":"nandu",
     "password" : "12345"
 }
+
+### GET req for fetching
+GET http://localhost:8383/todos/
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzU3MDc4MzUxLCJleHAiOjE3NTcxNjQ3NTF9.KGaAC59D0T9xL8v4TYqTZXXEE94GbUD-OsaGvI7nRFo
+### POST req for creating
+POST http://localhost:8383/todos/
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzU3MDc4MzUxLCJleHAiOjE3NTcxNjQ3NTF9.KGaAC59D0T9xL8v4TYqTZXXEE94GbUD-OsaGvI7nRFo
+Content-Type: application/json
+
+{
+
+    "task" : "This is second task"
+
+}
+
+### PUT req for updating
+PUT http://localhost:8383/todos/:2
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzU3MDc4MzUxLCJleHAiOjE3NTcxNjQ3NTF9.KGaAC59D0T9xL8v4TYqTZXXEE94GbUD-OsaGvI7nRFo
+Content-Type: application/json
+
+{
+    "completed" : 1
+}
+
+### DELETE req for deleting
+DELETE http://localhost:8383/todos/:2
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzU3MDc4MzUxLCJleHAiOjE3NTcxNjQ3NTF9.KGaAC59D0T9xL8v4TYqTZXXEE94GbUD-OsaGvI7nRFo
+Content-Type: application/json
+
+
