@@ -16,7 +16,7 @@ db.exec(`
 
 
 `)
-//This data is for todo
+//This data is for todo list
 db.exec(`
     CREATE TABLE todo(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
