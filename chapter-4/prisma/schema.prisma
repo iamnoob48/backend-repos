@@ -14,7 +14,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model user {
+model User {
   id         Int       @id @default(autoincrement())
   username   String    @unique
   password   String
@@ -29,6 +29,7 @@ model Todo {
   user_id     Int      
   task        String   
   completed   Boolean   @default(false)
-  user        User      @relation(field : [user_id], relations : [id])
+  isDeleted   Boolean   @default(false)
+  user        User      @relation(fields : [user_id], references : [id])
 
 }
