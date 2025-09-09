@@ -10,7 +10,7 @@ function PopupModal({ isOpen, onClose, onSubmit, title }) {
   if (!isOpen) return null;
 
   const handleSubmit = () => {
-    onSubmit({ task, description, priority, dueDate, category });
+    onSubmit({ task, description, priority, dueDate, category, completed : false, isDeleted : false });
     onClose();
   };
 
