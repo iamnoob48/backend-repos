@@ -8,6 +8,7 @@ export default defineConfig({
   server : {
     proxy : {
       "/auth" : "http://localhost:3000",
+      "/todo" : "http://localhost:3000",
       "/api" : "http://localhost:3000"
     }
   },

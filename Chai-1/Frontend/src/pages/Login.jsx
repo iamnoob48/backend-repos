@@ -11,7 +11,8 @@ function Login() {
   const navigate = useNavigate();
   
 
-  const handleSubmit = async ()=>{
+  const handleSubmit = async (e)=>{
+    e.preventDefault()
         let data;
   
         try{
@@ -39,11 +40,11 @@ function Login() {
                 data = await response.json()
             }
             if(data.token){
-                localStorage.setItem(data.token)
-                navigate('/dashboard')
+                localStorage.setItem("token",data.token);
+                navigate('/home');
             }
-        }catch(err){
-            console.log(err.message);
+        }catch(error){
+            console.log(error);
          
         }
     }

@@ -1,15 +1,76 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import PopupModal from './PopupModal';
 import AddCard from './AddCard.jsx';
 import NavBar from './NavBar';
 
+
 function DashBoard() {
+    const token = localStorage.getItem('token')
     const [popup,setPopup] = useState(false);
     const [title,setTitle] = useState("")
     const [task,setTask] = useState([]);
-    const handleSubmit = (newTask) => {
-        setTask((prev) => [...prev, {id:Date.now(), ...newTask}])
+    const [deleted, setDeleted] = useState(false);
+    const [completed, setCompleted] = useState(false);
+
+    const fetchTodos = async () => {
+        const response = await fetch("/todo",{
+            headers : {'Authorization' : token}
+        })
+        const data = await response.json();
+        setTask(data);
+
     }
+
+    useEffect(()=>{
+        
+        fetchTodos();
+
+    },[token])
+    const handleSubmit = async (newTask) => {
+        const {task, description, priority, dueDate, category, completed, isDeleted } = newTask
+        const response = await fetch("/todo",{
+            method : 'POST',
+            headers : {
+                'Content-Type': 'application/json',
+                
+                'Authorization' : token},
+            body : JSON.stringify({task : task, description : description, priority : priority, dueDate : dueDate, category : category, completed:completed, isDeleted:isDeleted})
+
+        })
+        const data = await response.json();
+        setTask(prev => [...prev, data])
+        
+
+    }
+    const handleUpdate = async (newCreds,index) => {
+        const {completed} = newCreds;
+        await fetch('/todo/'+ index, {
+            method : "PUT",
+            headers : {
+                'Content-Type': 'application/json',
+                'Authorization' : token},
+            body : JSON.stringify({id : index, completed : completed})
+
+        })
+        fetchTodos();
+        
+
+    }
+    const handleDelete = async (newCreds, id) => {
+        const {isDeleted} = newCreds;
+        await fetch('/todo:'+ index, {
+            method : "DELETE",
+            headers : {
+                'Content-Type': 'application/json',
+                'Authorization' : token},
+            body : JSON.stringify({id : id, isDeleted : isDeleted})
+
+        })
+        fetchTodos();
+
+
+    }
+
   return (
     <div className='flex'>
     <NavBar/>
@@ -24,7 +85,7 @@ function DashBoard() {
         <div className='mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'>
             {task.map((t)=>(
                
-                    <AddCard key={t.id} task={t} />
+                    <AddCard key={t.id} task={t} update={handleUpdate} deletedFun={handleDelete} />
                     
           
             

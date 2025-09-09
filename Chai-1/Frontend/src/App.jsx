@@ -14,7 +14,7 @@ function App() {
     
         <Routes>
           <Route path='/' element={<Login/>}></Route>
-          <Route path='/dashboard' element={<DashBoard/>}/>
+          <Route path='/home' element={<DashBoard/>}/>
         </Routes>
       {/* <Navbar/>
       <main className='flex-1 p-6'>

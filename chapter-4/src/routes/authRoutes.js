@@ -24,7 +24,7 @@ routes.post('/register',async (req,res)=>{
         })
         //We will insert a default task
         const defaultTask = "This is your first task";
-        await prisma.todo,create({
+        await prisma.todo.create({
             data : {
                 task : defaultTask,
                 user_id : user.id
@@ -55,7 +55,7 @@ routes.post('/login',async (req,res)=>{
 
     //If user is not matched we will send back a status and json telling its not matched
     if(!user){return res.status(401).json({message:"User not found"})}
-    const checkPass = bcrypt.compareSync(password,result.password);
+    const checkPass = bcrypt.compareSync(password,user.password);
     if(!checkPass) {return res.status(401).json({message:"Password incorrect"})};
 
     //If both user and password match the database we will generate token

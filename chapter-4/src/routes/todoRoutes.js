@@ -21,7 +21,7 @@ routes.post('/',async (req,res)=>{
     const addTask = await prisma.todo.create({
         data : {
             task,
-            user_id : req.userId;
+            user_id : req.userId
         }
 
     })
