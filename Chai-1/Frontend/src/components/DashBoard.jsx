@@ -9,8 +9,8 @@ function DashBoard() {
     const [popup,setPopup] = useState(false);
     const [title,setTitle] = useState("")
     const [task,setTask] = useState([]);
-    const [deleted, setDeleted] = useState(false);
-    const [completed, setCompleted] = useState(false);
+    const completedCount = 0;
+    const deletedCount = 0
 
     const fetchTodos = async () => {
         const response = await fetch("/todo",{
@@ -40,6 +40,7 @@ function DashBoard() {
         const data = await response.json();
         setTask(prev => [...prev, data])
         
+        
 
     }
     const handleUpdate = async (newCreds,index) => {
@@ -58,7 +59,7 @@ function DashBoard() {
     }
     const handleDelete = async (newCreds, id) => {
         const {isDeleted} = newCreds;
-        await fetch('/todo:'+ index, {
+        await fetch('/todo/'+ id, {
             method : "DELETE",
             headers : {
                 'Content-Type': 'application/json',
@@ -68,6 +69,21 @@ function DashBoard() {
         })
         fetchTodos();
 
+
+
+    }
+    const handleUndo = async (newCreds, id)=> {
+        const {completed} = newCreds;
+        await fetch('/todo/'+ id + '/undo', {
+            method : "PUT",
+            headers : {
+                'Content-Type': 'application/json',
+                'Authorization' : token},
+            body : JSON.stringify({id : id, completed : completed})
+
+        })
+        fetchTodos();
+        
 
     }
 
@@ -85,7 +101,7 @@ function DashBoard() {
         <div className='mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'>
             {task.map((t)=>(
                
-                    <AddCard key={t.id} task={t} update={handleUpdate} deletedFun={handleDelete} />
+                    <AddCard key={t.id} task={t} update={handleUpdate} deletedFun={handleDelete} undo={handleUndo} />
                     
           
             

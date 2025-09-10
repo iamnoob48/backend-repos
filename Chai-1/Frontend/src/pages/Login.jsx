@@ -8,6 +8,7 @@ function Login() {
   const [password,setPassword] = useState("");
   const [confirmPass, setConfirmPass] = useState("");
   const [error, setError] = useState(null);
+  const [isError , setIsError] = useState(false);
   const navigate = useNavigate();
   
 
@@ -16,7 +17,7 @@ function Login() {
         let data;
   
         try{
-            const isSamePass = password === confirmPass
+            const isSamePass = password === confirmPass;
             if(!isLogin && !isSamePass){
                 setError("Passwords dont match");
                 return;
@@ -38,6 +39,11 @@ function Login() {
                     body : JSON.stringify({email : username, password: password})
                 })
                 data = await response.json()
+            }
+            if(data.message){
+                setError(data.message);
+                setIsError(true);
+                return;
             }
             if(data.token){
                 localStorage.setItem("token",data.token);
@@ -70,7 +76,13 @@ function Login() {
             }`}
           >
             Signup
-          </button>
+          </button> 
+          {isError && (
+            <div className="text-red-500 border border-red-600 p-2 rounded mb-4 text-center">
+                {error}
+            </div>
+           )}
+
         </div>
 
         <form className="space-y-4" onSubmit={handleSubmit}>

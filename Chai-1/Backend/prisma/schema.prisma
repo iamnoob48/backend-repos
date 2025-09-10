@@ -19,10 +19,12 @@ enum Priority {
 }
 
 model User { 
-  id        Int       @id @default(autoincrement())
-  email      String   @unique
-  password  String    
-  todos     Todo[]
+  id                Int       @id @default(autoincrement())
+  email             String    @unique
+  password          String    
+  todos             Todo[]
+  streak            Int       @default(0)
+  completedTask     Int        @default(0)
 }
 
 model Todo {
@@ -34,6 +36,7 @@ model Todo {
   category      String
   priority      Priority  @default(MEDIUM)
   dueDate       DateTime?
+
 
   isDeleted     Boolean   @default(false)
   user          User      @relation(fields:[user_id], references:[id] )

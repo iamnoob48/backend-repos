@@ -32,6 +32,7 @@ router.post('/', async (req,res)=>{
 
 //For updating task which are completed
 router.put('/:id', async (req,res)=>{
+
     const {id,completed} = req.body;
     await prisma.todo.update({
         where : {
@@ -44,8 +45,66 @@ router.put('/:id', async (req,res)=>{
 
 
     })
-    res.json({message : "Task updated"});
+    if (completed){
+        await prisma.user.update({
+            where : {
+                id : req.userId,
 
+            },
+            data : {
+                completedTask : {increment : 1}
+    
+            }
+    
+        })
+    }
+    res.json({message : "Task updated"});
+    console.log("Yes it has updated")
+
+})
+
+router.put('/:id/undo', async (req,res)=>{
+    const {id,completed} = req.body;
+    await prisma.todo.update({
+        where:{
+            user_id : req.userId,
+            id : parseInt(id)
+
+        },
+        data : {
+            completed : completed
+        }
+
+    });
+    await prisma.user.update({
+        where : {
+            id : req.userId
+        },
+        data : {
+            
+            completedTask : {decrement : 1}
+
+        }
+
+    })
+    res.json({message:"Task undo"})
+    console.log("This is undoed")
+
+
+})
+
+router.delete('/:id', async (req,res)=>{
+    const {id, isDeleted} = req.body;
+    await prisma.todo.update({
+        where : {
+            user_id : req.userId,
+            id : parseInt(id)
+        },
+        data : {
+           isDeleted
+        }
+    })
+    res.json({message : "Task deleted"})
 })
 
 
